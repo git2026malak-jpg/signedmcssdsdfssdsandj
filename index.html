@@ -1,0 +1,825 @@
+
+<!-- saved from url=(0135)https://ecosys.gov.vn/PrintCO/s5c2b010 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Certificate Form B, Certificate No: VN-IQ 25/02/070502B</title>
+    
+    <link href="./Certificate Form B, Certificate No_ VN-IQ 25_02_070502B_files/styleprint.css" rel="stylesheet">
+
+    <script type="text/javascript" src="./Certificate Form B, Certificate No_ VN-IQ 25_02_070502B_files/jquery-1.10.2.min.js.download">
+    </script>
+    <script type="text/javascript">
+        function getURLParameter(name) {
+            return decodeURI(
+                (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search) || [, null])[1]
+            );
+        };
+
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            var docId = parseInt(getURLParameter('DocId'));
+            var companyTaxCode = getURLParameter('CompanyTaxCode');
+            var certificateNumber = getURLParameter('CertificateNumber');
+            var certificateDate = getURLParameter('CertificateDate');
+            var key = getURLParameter('Key');
+            var gobackUrl = getURLParameter('Goback');
+            $.ajax({
+                url: '/jsx/certificate/getinfoformVCCIB/data.jsx',
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: { DocId: docId, CertificateNumber: certificateNumber, Key: key }
+            }).success(function (response) {
+                if (response.message == 0) {
+                    cdata = response.data;
+                    var review = cdata.placeReview.toUpperCase() + ", " + cdata.reviewDate;
+                    var submit = cdata.placeSend.toUpperCase() + ", " + cdata.submitDate;
+                    var departmentInfoReview = cdata.departmentInfoReview;
+
+                    $('#exportInfo').val(cdata.companyNameEnglish.toUpperCase() + '\r\n' + cdata.companyAddress.toUpperCase() + '\r\n' + 'VIET NAM');
+                    $('#importInfo').val(cdata.nameEnglishPersionImport.toUpperCase() + '\r\n' + cdata.addressPersionImport.toUpperCase() + '\r\n' + cdata.countryNameImport.toUpperCase());
+                    $('#coNumber').val(cdata.certificateNumber.toUpperCase());
+                    $('#importNational').val(cdata.countryNameImport.toUpperCase());
+                    //$('#tranportMethod01').val(cdata.receiverPlace.toUpperCase());??
+                    $('#tranportDepartureDate').val(cdata.transportDate.toUpperCase());
+                    $('#shipName02').val(cdata.shipName.toUpperCase());
+                    $('#portDischarge').val(cdata.receiverPlace.toUpperCase());
+                    $('#placedate').val(submit);
+                    $('#coll12').val(review);
+
+
+                    $('#certificateNumber').text(cdata.certificateNumber.toUpperCase());
+                    $('#companyNameEnglish').text(cdata.companyNameEnglish.toUpperCase());
+                    $('#companyAddress').text(cdata.companyAddress.toUpperCase());
+                    $('#companyPhone').text(cdata.companyPhone.toUpperCase());
+                    $('#countryExport').text(cdata.countryExport.toUpperCase());
+                    $('#nameEnglishPersionImport').text(cdata.nameEnglishPersionImport.toUpperCase());
+                    $('#addressPersionImport').text(cdata.addressPersionImport.toUpperCase());
+                    $('#phonePersionImport').text(cdata.phonePersionImport.toUpperCase());
+                    $('.countryName').text(cdata.countryNameImport.toUpperCase());
+                    $('#countryNameImport').text(cdata.countryNameImport.toUpperCase());
+                    $('#countryNameImport02').text(cdata.countryNameImport.toUpperCase());
+                    $('#shipName').text(cdata.shipName.toUpperCase());
+                    $('#transportDate').text(cdata.transportDate.toUpperCase());
+                    $('#receiverPlace').text(cdata.receiverPlace.toUpperCase());
+                    $('#senderPlace').text(cdata.senderPlace.toUpperCase());
+                    $('#transportMethod').text(cdata.tranportName.toUpperCase());
+                    $('#reviewInfo').text(review);
+                    //$('#departmentInfoReview').text(departmentInfoReview);
+
+
+                    $('#submitInfo').text(submit);
+
+                    $('#linkStamp').attr('src', cdata.linkStamp);
+                    $('#linkQRCode').attr('src', cdata.linkQRCode);
+
+                    //Option
+                    var optionItems = cdata.OptionItems;
+                    $.each(optionItems, function (idx, obj) {
+                        if (obj.optionSelected === 1) {
+                            var classname = obj.name.replace(/ /g, "-");
+                            $('.' + classname).attr('src', 'imagesChecked.png');
+                        }
+                    });
+                    var items = cdata.Items;
+                    //bind all item
+
+                    //bind dữ liệu item vào bảng
+                    for (var i = 0; i < items.length; i++) {
+                        if (i > 0) $('#clone').clone().appendTo('.draft');
+
+                        $('.borderTwo:nth-child(' + (i + 1) + ')').addClass('fixheight-' + (i + 1));
+                        if (i > 0) $('.borderTwo:nth-child(' + (i + 1) + ')').removeClass('fixheight-1');
+                        //Split ký tự liền nhau trên 20 ký tự
+                        var sChar = items[i].shippingMark.split(' ');
+                        var shippingMark = items[i].shippingMark;
+                        var spChar = '';
+                        var checkLenght = false;
+                        sChar.forEach(function (current_value, idx) {
+                            //console.log('Số ký tự: ' + current_value.length + ' Text: ' + current_value + ' Vị trí: ' + idx);
+                            if (current_value.length > 18) {
+                                current_value = current_value.substr(0, 18) + ' ' + current_value.substr(18);
+                                checkLenght = true;
+                                console.log(checkLenght);
+                            }
+                            spChar += current_value + ' ';
+                        });
+                        if (checkLenght) shippingMark = spChar;
+                        //console.log(shippingMark);
+                        $('.stt')[i].innerText = items[i].stt;
+                        $('.shippingMark')[i].innerHTML = shippingMark.toUpperCase();
+                        $('.numberAndPackageDecription')[i].innerHTML = items[i].numberAndPackageDecription.replace(/\s\s+/g, ' ').toUpperCase();
+                        //$('.originCriteria')[i].innerHTML = items[i].originCriteria.replace(';', '; ').toUpperCase();
+                        $('.grossAndQuantity')[i].innerHTML = items[i].grossAndQuantity.toUpperCase();
+                        $('.numberAndDateInvoice')[i].innerHTML = items[i].numberAndDateInvoice.toUpperCase();
+                        $('.tciValue')[i].innerHTML = items[i].tciValue.toUpperCase();
+
+                        ////$('#col06')[i].val(hippingMark.toUpperCase());
+                        ////$('#col07')[i].val(items[i].numberAndPackageDecription.replace(/\s\s+/g, ' ').toUpperCase() + '\r\n' + items[i].tciValue.toUpperCase());
+                        ////$('#col08')[i].val(items[i].originCriteria.replace(';', '; ').toUpperCase());
+                        ////$('#col09')[i].val(items[i].grossAndQuantity.toUpperCase());
+                        ////$('#col10')[i].val(items[i].numberAndDateInvoice.toUpperCase());
+                    }
+
+                    //Phần trang template
+                    $('.draft').css('display', 'block');
+                    //thêm items vào từng trang
+                    //var itemHeightFix = 270;
+                    var itemHeightTD = 340;
+                    var draftItems = $('.draftItem');
+                    var pageItemheight = 0;
+
+                    for (var p = 0; p < draftItems.length; p++) {
+                        var height = $('.draftItem')[p].children[0].offsetHeight;
+                        if (height > itemHeightTD) {
+                            $('#copy').clone().appendTo('.WordSection1');
+                        } else {
+                            pageItemheight = pageItemheight + height;
+                            if (pageItemheight > itemHeightTD) {
+                                p = p - 1;
+                                pageItemheight = 0;
+                                $('#copy').clone().appendTo('.WordSection1');
+                            }
+                        }
+                    }
+                    //đánh số trang
+                    var totalpage = $('.fixheight').length;
+                    for (var i = 0; i < totalpage; i++) {
+                        var pageCur = i + 1;
+                        var item = $('.fixheight')[i];
+                        item.classList.add('fixheight-' + pageCur);
+                        $('.pageCur')[i].innerText = pageCur;
+                        $('.totalpage')[i].innerText = totalpage;
+                    }
+
+                    var k = 0;
+                    var pagelastheight = 0;
+                    var rowlastheight = 0;
+                    var ssrowlast = 0;
+
+                    $('.Items').each(function (idx, obj) {
+                        var pItemheight = 0;
+                        for (k; k < draftItems.length; k++) {
+                            var height = $('.draftItem')[k].children[0].offsetHeight;
+                            rowlastheight = height;
+
+                            var ss = idx + 1;
+                            ssrowlast = ss;
+
+                            if (height > itemHeightTD) {
+                                $('.fixheight-' + ss)[0].children[0].offsetHeight = itemHeightTD;
+                                $('div.fixheight-' + ss + ' tr#clone.borderTwo.draftItem.fixheight-' + (k + 1) + ' .col01Height').height(itemHeightTD);
+
+                                pItemheight = itemHeightTD;
+                                $(this).before($('.draftItem')[k].outerHTML);
+                            } else {
+                                var pItemheightBak = pItemheight;
+                                pItemheight = pItemheight + height;
+                                pagelastheight = pItemheight;
+
+                                if (pItemheight >= itemHeightTD) {
+
+                                    var heightConLai = itemHeightTD - pItemheightBak;
+                                    var height = $('.draftItem')[k - 1].children[0].offsetHeight;
+                                    $('div.fixheight-' + ss + ' tr#clone.borderTwo.draftItem.fixheight-' + (k) + ' .col01Height').height(height + heightConLai);
+
+                                    break;
+                                } else {
+                                    $('div.fixheight-' + ss + ' tr#clone.borderTwo.draftItem.fixheight-' + (k + 1) + ' .col01Height').height(height);
+
+                                    $(this).before($('.draftItem')[k].outerHTML);
+                                }
+                            }
+
+                        }
+
+                    });
+
+                    //Set height last row
+                    if (pagelastheight < itemHeightTD) {
+
+                        $('div.fixheight-' + ssrowlast + ' tr#clone.borderTwo.draftItem.fixheight-' + (draftItems.length) + ' .col01Height').height(rowlastheight + itemHeightTD - pagelastheight);
+                    }
+
+                    $('.draft').css('display', 'none');
+
+                    //set title
+                    var strTitle = 'Certificate ' + cdata.formName + ', Certificate No: ' + cdata.certificateNumber;
+                    $('title').text(strTitle);
+                    //fixheight
+                    var bodyHeight = $('.WordSection1').height();
+                    if (bodyHeight > 1075) {
+                        var fixbodyHeight = Math.ceil(bodyHeight / 1060);
+                        $('.WordSection1').css('height', fixbodyHeight * 1060);
+                    }
+
+                    var departmentId = parseInt(cdata.departmentId);
+                    const xnkInfo = document.querySelector('.xnkInfo');
+                    const sctHPInfo = document.querySelector('.sctHPInfo');
+                    const sctLSInfo = document.querySelector('.sctLSInfo');
+                    const sctQNInfo = document.querySelector('.sctQNInfo');
+                    const sctNBInfo = document.querySelector('.sctNBInfo');
+                    const sctDTInfo = document.querySelector('.sctDTInfo');
+                    const sctHYInfo = document.querySelector('.sctHYInfo');
+
+                    const sctTHInfo = document.querySelector('.sctTHInfo');
+                    const sctNAInfo = document.querySelector('.sctNAInfo');
+                    const sctHTInfo = document.querySelector('.sctHTInfo');
+                    const sctGLInfo = document.querySelector('.sctGLInfo');
+                    const sctAGInfo = document.querySelector('.sctAGInfo');
+                    const sctCMInfo = document.querySelector('.sctCMInfo');
+                    const sctVLInfo = document.querySelector('.sctVLInfo');
+                    const sctHUInfo = document.querySelector('.sctHUInfo');
+                    const sctPTInfo = document.querySelector('.sctPTInfo');
+
+                    const sctBNInfo = document.querySelector('.sctBNInfo');
+                    const sctLDInfo = document.querySelector('.sctLDInfo');
+                    const sctHNInfo = document.querySelector('.sctHNInfo');
+
+                    const sctKHInfo = document.querySelector('.sctKHInfo');
+                    const sctHCMInfo = document.querySelector('.sctHCMInfo');
+                    const sctTNIInfo = document.querySelector('.sctTNIInfo');
+                    const sctTNUInfo = document.querySelector('.sctTNUInfo');
+
+                    const sctDNAIInfo = document.querySelector('.sctDNAIInfo');
+                    const sctDANInfo = document.querySelector('.sctDANInfo');
+                    const sctLCAInfo = document.querySelector('.sctLCAInfo');
+					const sctCTHInfo = document.querySelector('.sctCTHInfo');
+					const sctCBAInfo = document.querySelector('.sctCBAInfo');
+					const sctDLAInfo = document.querySelector('.sctDLAInfo');
+					const sctQNAInfo = document.querySelector('.sctQNAInfo');
+
+                    switch (departmentId) {
+                        case 1:
+                        case 2:
+                        case 5:
+                        case 7:
+                        case 8:
+                            xnkInfo.style.display = 'block';
+                            break;
+                        case 3:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctHPInfo.style.display = 'block';
+                            document.querySelectorAll('.sctHPInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 13:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctLSInfo.style.display = 'block';
+                            document.querySelectorAll('.sctLSInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 14:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctQNInfo.style.display = 'block';
+                            document.querySelectorAll('.sctQNInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 19:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctDTInfo.style.display = 'block';
+                            document.querySelectorAll('.sctDTInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 34:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctNBInfo.style.display = 'block';
+                            document.querySelectorAll('.sctNBInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 15:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctHYInfo.style.display = 'block';
+                            document.querySelectorAll('.sctHYInfo').forEach(el => el.style.display = 'block');
+                            break;
+
+                        case 17:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctTHInfo.style.display = 'block';
+                            document.querySelectorAll('.sctTHInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 18:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctNAInfo.style.display = 'block';
+                            document.querySelectorAll('.sctNAInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 33:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctHTInfo.style.display = 'block';
+                            document.querySelectorAll('.sctHTInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 59:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctGLInfo.style.display = 'block';
+                            document.querySelectorAll('.sctGLInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 63:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctAGInfo.style.display = 'block';
+                            document.querySelectorAll('.sctAGInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 60:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctCMInfo.style.display = 'block';
+                            document.querySelectorAll('.sctCMInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 61:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctVLInfo.style.display = 'block';
+                            document.querySelectorAll('.sctVLInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 22:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctHUInfo.style.display = 'block';
+                            document.querySelectorAll('.sctHUInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 62:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctPTInfo.style.display = 'block';
+                            document.querySelectorAll('.sctPTInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 64:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctBNInfo.style.display = 'block';
+                            document.querySelectorAll('.sctBNInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 65:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctLDInfo.style.display = 'block';
+                            document.querySelectorAll('.sctLDInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 66:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctHNInfo.style.display = 'block';
+                            document.querySelectorAll('.sctHNInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 25:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctKHInfo.style.display = 'block';
+                            document.querySelectorAll('.sctKHInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 67:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctHCMInfo.style.display = 'block';
+                            document.querySelectorAll('.sctHCMInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 68:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctTNIInfo.style.display = 'block';
+                            document.querySelectorAll('.sctTNIInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 69:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctTNUInfo.style.display = 'block';
+                            document.querySelectorAll('.sctTNUInfo').forEach(el => el.style.display = 'block');
+                            break;
+
+                        case 16:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctLCAInfo.style.display = 'block';
+                            document.querySelectorAll('.sctLCAInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 70:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctDNAIInfo.style.display = 'block';
+                            document.querySelectorAll('.sctDNAIInfo').forEach(el => el.style.display = 'block');
+                            break;
+                        case 71:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctDANInfo.style.display = 'block';
+                            document.querySelectorAll('.sctDANInfo').forEach(el => el.style.display = 'block');
+                            break;
+						case 20:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctCTHInfo.style.display = 'block';
+                            document.querySelectorAll('.sctCTHInfo').forEach(el => el.style.display = 'block');
+                            break;
+						case 72:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctCBAInfo.style.display = 'block';
+                            document.querySelectorAll('.sctCBAInfo').forEach(el => el.style.display = 'block');
+                            break;
+						case 73:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctDLAInfo.style.display = 'block';
+                            document.querySelectorAll('.sctDLAInfo').forEach(el => el.style.display = 'block');
+                            break;
+						case 74:
+                            xnkInfo.style.display = 'none';
+                            document.querySelectorAll('.xnkInfo').forEach(el => el.style.display = 'none');
+                            sctQNAInfo.style.display = 'block';
+                            document.querySelectorAll('.sctQNAInfo').forEach(el => el.style.display = 'block');
+                            break;
+							
+                        default:
+                            break;
+                    }
+
+                    //print
+
+                } else { //not login
+                    alert(response.note);
+                }
+            });
+
+        });
+    </script>
+
+    <style type="text/css">
+        body {
+            line-height: 12pt;
+            font-family: 'Times New Roman';
+            font-size: 14pt
+        }
+
+        p {
+            margin: 0pt
+        }
+
+        table {
+            margin-top: 0pt;
+            margin-bottom: 0pt
+        }
+
+        .BalloonText {
+            line-height: normal;
+            font-family: Tahoma;
+            font-size: 8pt;
+            -aw-style-name: balloon-text
+        }
+
+        .ListParagraph {
+            margin-left: 36pt;
+            line-height: 12pt;
+            font-size: 14pt;
+            -aw-style-name: list-paragraph
+        }
+
+        span.BalloonTextChar {
+            font-family: Tahoma;
+            font-size: 8pt
+        }
+
+        .TableGrid {
+        }
+    </style>
+</head>
+<body style="">
+    <table class="draft" style="display: none;">
+        <tbody><tr class="borderTwo draftItem fixheight-1" id="clone" style="mso-yfti-irow: 5; page-break-inside: avoid;  border-bottom: none; ">
+            <td colspan="2" style="width: 341.9pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal col01Height" style="overflow: hidden; margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 0in; margin-left: 0in; margin-bottom: 6pt; line-height: 120%; mso-pagination: widow-orphan">
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="stt">1</span>.
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="shippingMark">CG C/NO.: 1 - 4,548 MADE IN VIET NAM ORDER NO.: CG-2506/1</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="numberAndPackageDecription">TRICYCLE TYRE<br>HS CODE: 40119010<br>4,548 PACKAGE</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="tciValue"></span>
+                </p>
+            </td>
+            <td style="width: 84pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span lang="EN-AU" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-bidi-font-weight: bold" class="grossAndQuantity">17,055.00 KILOGRAM<br>4,548.00 PIECE<br> </span>
+                </p>
+            </td>
+            <td style="width: 84.05pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span class="numberAndDateInvoice" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">SF-2505656<br>DATE: 10/08/2025</span>
+                </p>
+            </td>
+
+        </tr>
+
+    </tbody></table>
+
+    <div class="WordSection1">
+        <div align="center" id="copy" class="fixheight fixheight-1" style="height: 1075px; border: none;">
+            <table cellspacing="0" cellpadding="0" class="TableGrid" style="-aw-border-insideh:0.5pt single #000000; -aw-border-insidev:0.5pt single #000000; border-collapse:collapse">
+                <tbody><tr style="height:31.2pt; -aw-height-rule:exactly">
+                    <td rowspan="2" style="width:260.35pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">1.</span><span style="width:2.9pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.4pt">&nbsp;</span><span style="font-weight:bold">Goods consigned from</span><span> (Exporter’s business name, address,</span></p>
+                        <p style="font-size:10pt"><span style="width:10.4pt; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.4pt">&nbsp;</span><span>country)</span></p>
+                        <p style="font-size:10pt">
+                            <span style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-fareast-font-family: &quot;MS Mincho&quot;; mso-ansi-language: EN-US; mso-fareast-language: JA; mso-bidi-language: TH">
+                                <span id="companyNameEnglish">SHIH FA RUBBER INDUSTRIES (VN) CO., LTD.</span>
+                                <br>
+                                <span id="companyAddress" style="white-space:initial;">BAU TRAN HAMLET, NHUAN DUC COMMUNE, HOCHIMINH CITY, VIETNAM.</span>
+                                <br>
+                                <span class="companyCountryName">VIET NAM</span>
+                            </span>
+                        </p>
+
+                    </td>
+                    <td colspan="3" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt">
+                            <span style="font-weight:bold">Reference No.</span>&nbsp;
+                            <span id="certificateNumber">VN-IQ 25/02/070502B</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:62.35pt; -aw-height-rule:exactly">
+                    <td colspan="3" rowspan="2" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle; -aw-border:0.5pt single">
+                        <p style="text-align:center; font-size:16pt"><span style="font-weight:bold">CERTIFICATE OF ORIGIN</span></p>
+                        <p style="text-align:center; font-size:10pt"><span style="font-style:italic">(Combined declaration and certificate)</span></p><p style="text-align:center; font-size:18pt"><span style="font-weight:bold">FORM B</span></p>
+                        <p style="text-align:center; font-size:10pt"><span>Issued in Vietnam</span></p>
+                    </td>
+                </tr>
+                <tr style="height:11.35pt; -aw-height-rule:exactly">
+                    <td rowspan="2" style="width:260.35pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt">
+                            <span style="font-weight:bold">2.</span><span style="width:2.3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:9.8pt">&nbsp;</span>
+                            <span style="font-weight:bold">Goods consigned to</span><span> (Consignee’s name, address, country)</span>
+                        </p>
+                        <p style="font-size:10pt">
+                            <span style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-fareast-font-family: &quot;MS Mincho&quot;; mso-ansi-language: EN-US; mso-fareast-language: JA; mso-bidi-language: TH">
+                                <span id="nameEnglishPersionImport">ALBAYDAA ALAKHDAR GENERAL TRADING COMPANY</span>
+                                <br>
+                                <span id="addressPersionImport" style="white-space:initial;">IRAQ-BAGHDAD-ALKFAH STREET TEL: +9647706299235/ 7905347239</span>
+                                <br>
+                                <span style="text-transform: uppercase;" id="countryNameImport">IRAQ</span>
+                                <o:p></o:p>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:70.9pt; -aw-height-rule:exactly">
+                    <td colspan="3" rowspan="2" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt">
+                            <span style="font-weight:bold">4.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Competent authority</span><span> (name, address, country)</span>
+                        </p>
+                        <p style="font-size: 9pt; font-family: monospace; padding-top: 5pt;">
+                            <span id="departmentInfoReview1" class="xnkInfo" style="display: block;">
+                                AGENCY FOR FOREIGN TRADE <br>
+                                Address: 54 Hai Ba Trung Str., Hoan Kiem, Ha Noi, Viet Nam
+                            </span>
+                            <span class="sctHPInfo" style="display:none;">
+                                Hai Phong Department of Industry and Trade <br>
+                                Address: D Building (Building 11), Hai Phong City Political and Administrative Center, Bac Song Cam Urban Area, Thuy Nguyen Ward, Hai Phong City, Vietnam
+                            </span>
+                            <span class="sctLSInfo" style="display:none;">
+                                Lang Son Provincial Department of Industry and Trade <br>
+                                Address: 21 Ly Thai To street, Dong Kinh ward, Lang Sonprovince, Viet Nam
+                            </span>
+
+                            <span class="sctQNInfo" style="display:none;">
+                                Quang Ninh Provincial Department of Industry and Trade <br>
+                                Address: 10th Floor, Quang Ninh Municipal Office Building Number 2, Ha Long Ward, Quang Ninh City, Vietnam
+                            </span>
+                            <span class="sctNBInfo" style="display:none;">
+                                Ninh Binh Provincial Department of Industry and Trade <br>
+                                Address: 03, Dinh Tat Mien Road, Hoa Lu Ward, Ninh Binh Province
+                            </span>
+                            <span class="sctDTInfo" style="display:none;">
+                                Dong Thap Provincial Department of Industry and Trade <br>
+                                Address: No. 387, Hung Vuong Street, Dao Thanh Ward, Dong Thap Province
+                            </span>
+                            <span class="sctHYInfo" style="display:none;">
+                                Hung Yen Provincial Department of Industry and Trade <br>
+                                Address: A Square Road, Pho Hien Ward, Hung Yen Province, Vietnam
+                            </span>
+
+                            <span class="sctTHInfo" style="display:none;">
+                                Thanh Hoa Provincial Department of Industry and Trade <br>
+                                Address: Administrative Complex, No.77, Bui Khac Nhat Road, Hac Thanh Ward, Thanh Hoa Province.
+                            </span>
+                            <span class="sctNAInfo" style="display:none;">
+                                Nghe An Provincial Department of Industry and Trade <br>
+                                Address: No. 70, Nguyen Thi Minh Khai Street, Thanh Vinh Ward, Nghe An Province, Vietnam
+                            </span>
+                            <span class="sctHTInfo" style="display:none;">
+                                Ha Tinh Provincial Department of Industry and Trade <br>
+                                Address: No. 225, Nguyen Huy Tu Street, Thanh Sen Ward, Ha Tinh Province, Vietnam
+                            </span>
+                            <span class="sctGLInfo" style="display:none;">
+                                Gia Lai Provincial Department of Industry and Trade <br>
+                                Address: No. 70 Tran Hung Dao Street, Quy Nhon Ward, Gia Lai Province
+                            </span>
+                            <span class="sctAGInfo" style="display:none;">
+                                An Giang Provincial Department of Industry and Trade <br>
+                                Address: No. 840 Nguyen Trung Truc Street, Rach Gia Ward, An Giang Province, Vietnam
+                            </span>
+                            <span class="sctCMInfo" style="display:none;">
+                                Ca Mau Provincial Department of Industry and Trade <br>
+                                Address: No. 290, Tran Hung Dao Street, Tan Thanh Ward, Ca Mau Province, Viet Nam
+                            </span>
+                            <span class="sctVLInfo" style="display:none;">
+                                Vinh Long Provincial Department of Industry and Trade <br>
+                                Address: No.2A, Hung Vuong Street, Long Chau Ward, Vinh Long Province, Vietnam
+                            </span>
+                            <span class="sctHUInfo" style="display:none;">
+                                Hue Department of Industry and Trade <br>
+                                Address: 02 Ton Duc Thang street, Thuan Hoa ward, Hue city, Viet Nam
+                            </span>
+                            <span class="sctPTInfo" style="display:none;">
+                                Phu Tho Provincial Department of Industry and Trade <br>
+                                Address: Zone 7, Vu The Lang Street, Viet Tri Ward, Phu Tho Province, Vietnam
+                            </span>
+                            <span class="sctBNInfo" style="display:none;">
+                                Bac Ninh Provincial Department of Industry and Trade <br>
+                                Address: 18 Hoang Van Thu Street, Bac Giang Ward, Bac Ninh Province, Viet Nam
+                            </span>
+                            <span class="sctLDInfo" style="display:none;">
+                                Lam Dong Provincial Department of Industry and Trade <br>
+                                Address: 2nd Floor, Block A, Lam Dong Administrative Center, No. 36 Tran Phu Street, Xuan Huong - Da Lat Ward, Lam Dong Province, Viet Nam
+                            </span>
+                            <span class="sctHNInfo" style="display:none;">
+                                Ha Noi Department of Industry and Trade <br>
+                                Address: 331 Cau Giay Street, Cau Giay Ward, Ha Noi
+                            </span>
+                            <span class="sctKHInfo" style="display:none;">
+                                Khanh Hoa Department of Industry and Trade  <br>
+                                Address: No. 04 Phan Chu Trinh Street, Nha Trang Ward, Khanh Hoa Province, Viet Nam
+                            </span>
+                            <span class="sctHCMInfo" style="display:none;">
+                                Ho Chi Minh Department of Industry and Trade <br>
+                                Address: 163 Hai Ba Trung Street, Xuan Hoa Ward, Ho Chi Minh City
+                            </span>
+                            <span class="sctTNIInfo" style="display:none;">
+                                Tay Ninh Department of Industry and Trade <br>
+                                Address: No. 04 Song Hành Street, Long An Ward, Tay Ninh Province
+                            </span>
+                            <span class="sctTNUInfo" style="display:none;">
+                                Thai Nguyen Department of Industry and Trade <br>
+                                Address: Number 366/1, Bac Kan Street, Phan Dinh Phung Ward, Thai Nguyen Province, Vietnam
+                            </span>
+                            <span class="sctDANInfo" style="display:none;">
+                                Da Nang Department of Industry and Trade <br>
+                                Address: No 113 Ong Ich Duong Street, Cam Le Ward, Da Nang City, Viet Nam
+                            </span>
+                            <span class="sctDNAIInfo" style="display:none;">
+                                Dong Nai Department of Industry and Trade <br>
+                                Address: No. 2 Nguyen Van Tri Street, Tran Bien Ward, Dong Nai Province, Viet Nam
+                            </span>
+                            <span class="sctLCAInfo" style="display:none;">
+                                Lao Cai Department of Industry and Trade <br>
+                                Address: No. 165, Ly Thuong Kiet Street, Yen Bai Ward, Lao Cai Province, Viet Nam
+                            </span>
+							<span class="sctCTHInfo" style="display:none;">
+                                Can Tho Department of Industry and Trade <br>
+                                Address: No. 19-21 Ly Tu Trong Street, Ninh Kieu District, Can Tho City, Viet Nam
+                            </span>
+							
+							<span class="sctCBAInfo" style="display:none;">
+                                Cao Bang Department of Industry and Trade <br>
+                                Address: Second and third floors, Building B, Cao Bang Provincial Departments and Agencies Office Building, New Urban Area, Thuc Phan Ward, Cao Bang Province, Viet Nam
+                            </span>
+							<span class="sctDLAInfo" style="display:none;">
+                                Dak Lak Department of Industry and Trade <br>
+                                Address: 17 Truong Chinh Street, Buon Ma Thuot Ward, Dak Lak Province, Viet Nam
+                            </span>
+							<span class="sctQNAInfo" style="display:none;">
+                                Quảng Ngãi Department of Industry and Trade <br>
+                                Address: 58 - 60 Pham Van Dong Street, Cam Thanh Ward, Quang Ngai Province, Viet Nam
+                            </span>
+							
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:11.35pt; -aw-height-rule:exactly">
+                    <td rowspan="2" style="width:260.35pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt">
+                            <span style="font-weight:bold">3.</span><span style="width:2.9pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.4pt">&nbsp;</span>
+                            <span style="font-weight:bold">Means of transport and route</span><span> (as far as known)</span>
+                        </p>
+                        <p style="font-size:10pt">
+                            <span style="font-size: 8.0pt; line-height: 140%; font-family: monospace; mso-fareast-font-family: &quot;MS Mincho&quot;; mso-ansi-language: EN-US; mso-fareast-language: JA">
+                                <!--FROM: <span id="senderPlace"></span>
+                                <br />-->
+                                <span id="transportMethod">BY SEA</span>
+                                <br>
+                                <span style="padding-right: 80px;">Departure Date:</span> <span id="transportDate">26/08/2025</span>
+                                <br>
+                                <span style="padding-right: 20px;">
+                                    Vessel's name/Aircraft etc.:
+                                </span><span id="shipName">APL DANUBE / 0PGLNE1MA</span>
+                                <br>
+                                <span style="padding-right: 3px;">
+                                    Port of Discharge:
+                                </span> <span id="receiverPlace">UMM QASR (IRAQ)</span>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:85.05pt; -aw-height-rule:exactly">
+                    <td colspan="3" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">5.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">For official use</span></p>
+                    </td>
+                </tr>
+                <tr style="height:39.35pt; -aw-height-rule:exactly">
+                    <td colspan="2" style="width:341.9pt; border-style:solid; border-bottom:none; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">6.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Marks, numbers and kind of packages; description of goods</span></p>
+                    </td>
+                    <td style="width: 84pt; border-style: solid; border-bottom: none; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single"><p style="font-size:10pt"><span style="font-weight:bold">7.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Gross weight or</span></p><p style="font-size:10pt"><span style="width:10.5pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">other quantity</span></p></td>
+                    <td style="width: 84.05pt; border-style: solid; border-bottom: none; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single"><p style="font-size:10pt"><span style="font-weight:bold">8.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Number and</span></p><p style="font-size:10pt"><span style="width:10.5pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">date of invoices</span></p></td>
+                </tr>
+
+                <!-- items -->
+                <tr class="borderTwo draftItem fixheight-1" id="clone" style="mso-yfti-irow: 5; page-break-inside: avoid;  border-bottom: none; ">
+            <td colspan="2" style="width: 341.9pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal col01Height" style="overflow: hidden; margin: 3pt 1.8pt 6pt 0in; line-height: 120%; height: 340px;">
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="stt">1</span>.
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="shippingMark">CG C/NO.: 1 - 4,548 MADE IN VIET NAM ORDER NO.: CG-2506/1</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="numberAndPackageDecription">TRICYCLE TYRE<br>HS CODE: 40119010<br>4,548 PACKAGE</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="tciValue"></span>
+                </p>
+            </td>
+            <td style="width: 84pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span lang="EN-AU" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-bidi-font-weight: bold" class="grossAndQuantity">17,055.00 KILOGRAM<br>4,548.00 PIECE<br> </span>
+                </p>
+            </td>
+            <td style="width: 84.05pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span class="numberAndDateInvoice" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">SF-2505656<br>DATE: 10/08/2025</span>
+                </p>
+            </td>
+
+        </tr><tr class="Items" style="display: none;">
+                    <td colspan="2" style="width:341.9pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p class="MsoNormal col01Height" style="overflow:hidden; margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 0in; margin-left: 0in; margin-bottom: .0001pt; line-height: 100%; mso-pagination: widow-orphan">
+                            &nbsp;
+                        </p>
+                    </td>
+                    <td style="width:84pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 100%; mso-pagination: widow-orphan">
+                            &nbsp;
+                        </p>
+                    </td>
+                    <td style="width:84.05pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 100%; mso-pagination: widow-orphan">
+                            &nbsp;
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- End items -->
+                <tr style="height:153.1pt; -aw-height-rule:exactly">
+                    <td style="width:260.35pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">9.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Certification</span></p>
+                        <p style="margin-left:10.5pt; font-size:10pt"><span>It is hereby certified, on the basis of control carried out, that the declaration by the exporter is correct.</span></p><p style="margin-top:6pt; margin-left:10.5pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p><p style="margin-left:10.5pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <br>
+                        <div>
+                            <div class="MsoBodyText" style="text-align:center; width:58%;float:left;padding-top: 15px;">
+                                <img id="linkStamp" src="./Certificate Form B, Certificate No_ VN-IQ 25_02_070502B_files/xnkphonghcm-tranngocbinh25.jpg" width="100%">
+                            </div>
+                            <div class="qrcode" style="text-align: center; width:40%;float:left;">
+                                <img id="linkQRCode" src="./Certificate Form B, Certificate No_ VN-IQ 25_02_070502B_files/barcode-qrcode-aHR0cHM6Ly9lY29zeXMuZ292LnZuL1ByaW50Q08vc2hGb3JtMjIuaHRtbD9Eb2NJZD0xNTIzMzE0NCZDZXJ0aWZpY2F0ZU51bWJlcj1WTi1JUSUyMDI1LzAyLzA3MDUwMkImS2V5PTY2YzMwNjQ.png">
+                            </div>
+                        </div>
+
+                        <br style="clear:both;">
+                        <p style="margin-left:10.5pt; font-size:10pt"><span style=" font-family: monospace ;-aw-import:ignore;" id="reviewInfo">HO CHI MINH CITY, 18/09/2025</span></p>
+                        <p style="margin-left:10.5pt; font-size:10pt"><span style="height:0pt; display:block; position:absolute; z-index:1"><img src="./Certificate Form B, Certificate No_ VN-IQ 25_02_070502B_files/Aspose.Words.73d30a86-e9d5-4e9c-9070-f555de6ae0f0.001.png" width="284" height="2" alt="" style="margin-top:5.96pt; margin-left:4.74pt; -aw-left-pos:15.24pt; -aw-rel-hpos:column; -aw-rel-vpos:paragraph; -aw-top-pos:5.96pt; -aw-wrap-type:none; position:absolute"></span><span style="-aw-import:ignore">&nbsp;</span></p><p style="margin-left:10.5pt; font-size:9pt"><span style="font-style:italic">(Place and date, signature and stamp of certifying authority)</span></p>
+                    </td>
+                    <td colspan="3" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">10.</span><span style="width:3.65pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:16.15pt">&nbsp;</span><span style="font-weight:bold">Declaration by the exporter</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span>The undersigned hereby declares that the above details and statements are correct; that all the goods were produced in</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span>Vietnam and that they comply with the origin requirements specified for goods exported to</span></p>
+                        <p style="margin-left:100.15pt; text-align:center; font-size:10pt"><span id="countryNameImport02" style="font-family:monospace; font-size: 8pt; text-transform: uppercase;">IRAQ</span></p>
+                        <p style="margin-left:16.15pt; text-align:center; font-size:10pt"><span style="height:0pt; text-align:left; display:block; position:absolute; z-index:0"><img src="./Certificate Form B, Certificate No_ VN-IQ 25_02_070502B_files/Aspose.Words.73d30a86-e9d5-4e9c-9070-f555de6ae0f0.002.png" width="90" height="2" alt="" style="margin-top:6.34pt; margin-left:135.17pt; -aw-left-pos:151.32pt; -aw-rel-hpos:column; -aw-rel-vpos:paragraph; -aw-top-pos:6.34pt; -aw-wrap-type:none; position:absolute"></span><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; text-align:center; font-size:9pt"><span style="font-style:italic; -aw-import:spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-style:italic">(importing country)</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style=" font-family: monospace ;-aw-import:ignore;" id="submitInfo">HO CHI MINH CITY, 16/09/2025</span></p>
+                        <p style="font-size:9pt"><span style="height:0pt; display:block; position:absolute; z-index:2"><img src="./Certificate Form B, Certificate No_ VN-IQ 25_02_070502B_files/Aspose.Words.73d30a86-e9d5-4e9c-9070-f555de6ae0f0.003.png" width="242" height="2" alt="" style="margin-top:7.61pt; margin-left:18.26pt; -aw-left-pos:18.26pt; -aw-rel-hpos:column; -aw-rel-vpos:paragraph; -aw-top-pos:7.61pt; -aw-wrap-type:none; position:absolute"></span><span style="font-style:italic; -aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:9pt"><span style="font-style:italic">(Place and date, signature of authorised signatory)</span></p>
+                    </td>
+                </tr>
+
+            </tbody></table>
+            <div style="text-align: right; font-size: 7.0pt; width: 521.45pt;">Page <span class="pageCur">1</span> / <span class="totalpage">1</span></div>
+        </div>
+    </div>
+
+</body></html>
